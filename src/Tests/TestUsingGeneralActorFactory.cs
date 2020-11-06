@@ -1,46 +1,47 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Akka.Actor;
-using Akka.DI.Core;
-using Akka.DI.Extensions.DependencyInjection;
-using Akka.TestKit.Xunit2;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit;
-
 namespace Tests
 {
+    using Akka.Actor;
+    using Akka.DI.Core;
+    using Akka.TestKit.Xunit2;
+    using FluentAssertions;
+    using Microsoft.Extensions.DependencyInjection;
+    using SeungyongShim.Akka.DI.Extensions.DependencyInjection.TestKit;
+    using Xunit;
+
     public class TestUsingGeneralActorFactory : TestKit
     {
         [Fact]
-        public void Production_Using_Genral_Props_Factory()
+        public void Has_Child_PropsFactory()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IPropsFactory<ChildActor>, GeneralPropsFactory<ChildActor>>();
+            services.AddSingleton<ActorSystem>(sp => Sys);
+            services.AddSingleton<IActorRef>(sp => TestActor);
+            services.AddSingleton<IPropsFactory<ChildActor>, PropsFactory<ChildActor, MockChildActor>>();
+            services.AddSingleton<IPropsFactory<ParentActor>, PropsFactory<ParentActor>>();
             services.AddTransient<ParentActor>();
-            Sys.UseServiceProvider(services.BuildServiceProvider());
+            services.AddTransient<MockChildActor>();
+            Sys.UseDependencyInjectionServiceProvider(services.BuildServiceProvider());
 
-            ActorOf(Sys.DI().Props<ParentActor>());
+            ActorOf(Sys.DI().PropsFactory<ParentActor>().Create());
 
-            ExpectNoMsg();
+            ExpectMsg<string>().Should().Be("Hello, Kid");
+            ExpectMsg<string>().Should().Be("Hello, Kid");
         }
 
         [Fact]
-        public void Has_Child_Factory()
+        public void Production()
         {
             var services = new ServiceCollection();
-            // MockChildActor에서 사용하는 TestActor 의존성을 선언한다.
-            services.AddSingleton<IActorRef>(sp => TestActor);
-            services.AddSingleton<IPropsFactory<ChildActor>, MockChildPropsFactory>();
+            services.AddSingleton<ActorSystem>(sp => Sys);
+            services.AddSingleton<IPropsFactory<ChildActor>, PropsFactory<ChildActor>>();
+            services.AddSingleton<IPropsFactory<ParentActor>, PropsFactory<ParentActor>>();
             services.AddTransient<ParentActor>();
-            Sys.UseServiceProvider(services.BuildServiceProvider());
+            services.AddTransient<ChildActor>();
+            Sys.UseDependencyInjectionServiceProvider(services.BuildServiceProvider());
 
-            ActorOf(Sys.DI().Props<ParentActor>());
+            ActorOf(Sys.DI().PropsFactory<ParentActor>().Create());
 
-            ExpectMsg<string>().Should().Be("Hello, Kid");
+            ExpectNoMsg();
         }
 
         private class ChildActor : ReceiveActor
@@ -51,55 +52,16 @@ namespace Tests
             }
         }
 
-        
-
-        public class GeneralPropsFactory<T> : IPropsFactory<T> where T : ActorBase
-        {
-            public GeneralPropsFactory(IServiceProvider serviceProvider)
-            {
-                ServiceProvider = serviceProvider;
-            }
-
-            public IServiceProvider ServiceProvider { get; }
-
-            public Props GetProps() =>
-                Props.Create(() => ServiceProvider.GetRequiredService<T>());
-        }
-
-        private class MockChildPropsFactory : IPropsFactory<ChildActor>
-        {
-            public MockChildPropsFactory(IActorRef testActor)
-            {
-                TestActor = testActor;
-            }
-
-            public IActorRef TestActor { get; }
-
-            public Props GetProps() =>
-                 Props.Create(() => new MockChildActor(TestActor));
-        }
-
-        private class MockChildActor : ReceiveActor
-        {
-            public MockChildActor(IActorRef testActor) =>
-                ReceiveAny(o => testActor.Forward(o));
-        }
-
         private class ParentActor : ReceiveActor
         {
-            public ParentActor(IServiceProvider serviceProvider)
+            public ParentActor()
             {
-                var childActor = Context.ActorOf(
-                    serviceProvider.GetRequiredService<IPropsFactory<ChildActor>>().GetProps());
+                var childActor1 = Context.ActorOf(Context.DI().PropsFactory<ChildActor>().Create());
+                var childActor2 = Context.ActorOf(Context.DI().PropsFactory<ChildActor>().Create());
 
-                childActor.Tell("Hello, Kid");
+                childActor1.Tell("Hello, Kid");
+                childActor2.Tell("Hello, Kid");
             }
         }
     }
-    public interface IPropsFactory<T> where T : ActorBase
-    {
-        Props GetProps();
-    }
-
-   
 }
