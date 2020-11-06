@@ -13,13 +13,13 @@ using Xunit;
 
 namespace Tests
 {
-    public class TestUsingChildFactory : TestKit
+    public class TestUsingGeneralActorFactory : TestKit
     {
         [Fact]
-        public void Production()
+        public void Production_Using_Genral_Props_Factory()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IChildFactory<ChildActor>, ChildFactory>();
+            services.AddSingleton<IPropsFactory<ChildActor>, GeneralPropsFactory<ChildActor>>();
             services.AddTransient<ParentActor>();
             Sys.UseServiceProvider(services.BuildServiceProvider());
 
@@ -34,7 +34,7 @@ namespace Tests
             var services = new ServiceCollection();
             // MockChildActor에서 사용하는 TestActor 의존성을 선언한다.
             services.AddSingleton<IActorRef>(sp => TestActor);
-            services.AddSingleton<IChildFactory<ChildActor>, MockChildFactory>();
+            services.AddSingleton<IPropsFactory<ChildActor>, MockChildPropsFactory>();
             services.AddTransient<ParentActor>();
             Sys.UseServiceProvider(services.BuildServiceProvider());
 
@@ -51,20 +51,24 @@ namespace Tests
             }
         }
 
-        public interface IChildFactory<T>
-        {
-            Props GetProps();
-        }
+        
 
-        private class ChildFactory : IChildFactory<ChildActor>
+        public class GeneralPropsFactory<T> : IPropsFactory<T> where T : ActorBase
         {
+            public GeneralPropsFactory(IServiceProvider serviceProvider)
+            {
+                ServiceProvider = serviceProvider;
+            }
+
+            public IServiceProvider ServiceProvider { get; }
+
             public Props GetProps() =>
-                 Props.Create(() => new ChildActor());
+                Props.Create(() => ServiceProvider.GetRequiredService<T>());
         }
 
-        private class MockChildFactory : IChildFactory<ChildActor>
+        private class MockChildPropsFactory : IPropsFactory<ChildActor>
         {
-            public MockChildFactory(IActorRef testActor)
+            public MockChildPropsFactory(IActorRef testActor)
             {
                 TestActor = testActor;
             }
@@ -86,10 +90,16 @@ namespace Tests
             public ParentActor(IServiceProvider serviceProvider)
             {
                 var childActor = Context.ActorOf(
-                    serviceProvider.GetRequiredService<IChildFactory<ChildActor>>().GetProps());
+                    serviceProvider.GetRequiredService<IPropsFactory<ChildActor>>().GetProps());
 
                 childActor.Tell("Hello, Kid");
             }
         }
     }
+    public interface IPropsFactory<T> where T : ActorBase
+    {
+        Props GetProps();
+    }
+
+   
 }

@@ -14,7 +14,6 @@ namespace Tests
         public void Production()
         {
             var services = new ServiceCollection();
-            // MockChildActor에서 사용하는 TestActor 의존성 컨테이너를 작성한다.
             services.AddTransient<ChildActor>();
             Sys.UseServiceProvider(services.BuildServiceProvider());
 
@@ -27,7 +26,7 @@ namespace Tests
         public void Has_Not_Child_Factory()
         {
             var services = new ServiceCollection();
-            // MockChildActor에서 사용하는 TestActor 의존성 컨테이너를 작성한다.
+            // MockChildActor에서 사용하는 TestActor 의존성을 선언한다.
             services.AddSingleton<IActorRef>(sp => TestActor);
             services.AddTransient<ChildActor, MockChildActor>();
             Sys.UseServiceProvider(services.BuildServiceProvider());
@@ -36,7 +35,7 @@ namespace Tests
 
             ExpectMsg<string>().Should().Be("Hello, Kid");
         }
-    
+
 
         private class ChildActor : ReceiveActor
         {
@@ -55,7 +54,7 @@ namespace Tests
                 // ChildActor 생성자에서 선언한 Receive를 오버라이딩 한다.
                 Become(() =>
                 {
-                    ReceiveAny(o => testActor.Tell(o));
+                    ReceiveAny(o => testActor.Forward(o));
                 });
             }
         }

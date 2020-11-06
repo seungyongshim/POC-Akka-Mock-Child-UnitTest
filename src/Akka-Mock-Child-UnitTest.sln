@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30524.135
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{F7ED1EA5-AB23-4DD9-A0BE-B6A494F55738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{F7ED1EA5-AB23-4DD9-A0BE-B6A494F55738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeungyongShim.Akka.DI.Extensions.DependencyInjection", "SeungyongShim.Akka.DI.Extensions.DependencyInjection\SeungyongShim.Akka.DI.Extensions.DependencyInjection.csproj", "{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,9 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F7ED1EA5-AB23-4DD9-A0BE-B6A494F55738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -30,5 +29,23 @@ Global
 		{F7ED1EA5-AB23-4DD9-A0BE-B6A494F55738}.Release|x64.Build.0 = Release|Any CPU
 		{F7ED1EA5-AB23-4DD9-A0BE-B6A494F55738}.Release|x86.ActiveCfg = Release|Any CPU
 		{F7ED1EA5-AB23-4DD9-A0BE-B6A494F55738}.Release|x86.Build.0 = Release|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Debug|x64.Build.0 = Debug|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Debug|x86.Build.0 = Debug|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Release|x64.ActiveCfg = Release|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Release|x64.Build.0 = Release|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Release|x86.ActiveCfg = Release|Any CPU
+		{BC5FB67E-12A8-4770-B5AD-2D3C82E9448C}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3FC7A79D-4DF0-4547-8A8A-A0FD3ADB6E7A}
 	EndGlobalSection
 EndGlobal
