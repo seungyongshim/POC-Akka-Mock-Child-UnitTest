@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Akka.Actor;
-using Akka.DI.Core;
-using Akka.DI.Extensions.DependencyInjection;
-using Akka.TestKit.Xunit2;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit;
-
 namespace Tests
 {
+    using System;
+    using Akka.Actor;
+    using Akka.DI.Core;
+    using Akka.DI.Extensions.DependencyInjection;
+    using Akka.TestKit.Xunit2;
+    using FluentAssertions;
+    using Microsoft.Extensions.DependencyInjection;
+    using Xunit;
+
     public class TestUsingChildFactory : TestKit
     {
         [Fact]

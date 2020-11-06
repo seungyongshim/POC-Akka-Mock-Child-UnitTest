@@ -1,13 +1,13 @@
-using Akka.Actor;
-using Akka.DI.Core;
-using Akka.DI.Extensions.DependencyInjection;
-using Akka.TestKit.Xunit2;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit;
-
 namespace Tests
 {
+    using Akka.Actor;
+    using Akka.DI.Core;
+    using Akka.DI.Extensions.DependencyInjection;
+    using Akka.TestKit.Xunit2;
+    using FluentAssertions;
+    using Microsoft.Extensions.DependencyInjection;
+    using Xunit;
+
     public class TestNotUsingChildFactory : TestKit
     {
         [Fact]
